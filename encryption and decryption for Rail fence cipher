@@ -1,0 +1,88 @@
+//rail fence cipher technique
+#include<iostream>
+#include<string.h>
+using namespace std;
+ 
+char *encryption(char msg[], int key)
+{
+    int msgLen=strlen(msg), i, j, k = -1, row = 0, col = 0;
+    char railmat[key][msgLen];
+ 
+    for(i = 0; i < key; ++i)
+        for(j = 0; j < msgLen; ++j)
+            railmat[i][j] = '$';
+ 
+    for(i = 0; i < msgLen; ++i){
+        railmat[row][col++] = msg[i];
+        if(row == 0 || row == key-1)
+            k=k*(-1);
+        row = row + k;
+    }
+ 
+    cout<<"\nEncrypted Message: ";
+    for(i = 0; i < key; ++i)
+        for(j = 0; j < msgLen; ++j)
+            if(railmat[i][j] != '$')
+                cout<<railmat[i][j];
+}
+ 
+char *decryption(char msg[], int key)
+{
+    int msgLen = strlen(msg), i, j, k = -1, row = 0, col = 0, m = 0;
+    char railmat[key][msgLen];
+ 
+    for(i = 0; i < key; i++)
+        for(j = 0; j < msgLen; j++)
+            railmat[i][j] = '\n';
+ 
+    for(i = 0; i < msgLen; ++i)
+	{
+        railmat[row][col++] = '@';
+        if(row == 0 || row == key-1)
+            k= k * (-1);
+        row = row + k;
+    }
+ 
+    for(i = 0; i < key; ++i)
+        for(j = 0; j < msgLen; ++j)
+            if(railmat[i][j] == '@')
+                railmat[i][j] = msg[m++];
+ 
+    row = col = 0;
+    k = -1;
+ 
+    cout<<"\nDecrypted Message: ";
+ 
+    for(i = 0; i < msgLen; ++i)
+	{
+        cout<<railmat[row][col++];
+        if(row == 0 || row == key-1)
+            k= k * (-1);
+        row = row + k;
+    }
+}
+ 
+int main(){
+    char msg[100],choice;
+    int key;
+    do{
+    cout<<"Enter text(without spaces)"<<endl;
+    cin>>msg;
+    key=3;
+    int opt;	
+	cout<<"Choose option\n1.Encryption\n2.Decryption\n3.Exit"<<endl;
+    cin>>opt;
+    switch(opt)
+    {
+    	case 1 : encryption(msg,key);
+    			break;
+    	case 2 : decryption(msg,key);
+    			break;
+    	case 3 :exit(0);
+    	
+	}
+	cout<<"\nPress 'y' to continue ";
+    cin>>choice;
+	}while(choice=='y');
+   return 0;
+}
